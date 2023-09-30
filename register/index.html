@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>taskflow</title>
+  </head>
+  <body>
+    <main>
+      <div class="bg">
+        <div class="logo">
+          <img src="/img/logoTaskFlowWhite.png" alt="logoTaskFlow">
+        </div>
+        <div class="title">
+          <h3>
+            Bem-vindo(a).
+            Comece sua jornada agora com nosso sistema de gerenciamento de tarefas
+          </h3>
+        </div>
+        <div class="ellipse" id="ellipse-1"></div>
+      </div>
+      <div class="login">
+        <div class="title">
+          <!-- <p>Welcome Back</p> -->
+          <h3>Crie a sua conta aqui</h3>
+        </div>
+        <form action="" method="get" class="submit">
+          <div class="email">
+            <div class="row">
+              <label for="email" id="email-label">Email</label>
+            </div>
+            <input
+              type="email"
+              name="input"
+              id="email-field"
+              placeholder="taskflow@gmail.com"
+              required
+            />
+          </div>
+          <div class="password">
+            <div class="row">
+              <label for="password">Senha</label>
+              <a href="#" id="forget">Esqueceu sua senha?</a>
+            </div>
+            <input
+              type="text"
+              name="input"
+              id="password-field"
+              placeholder="Digite sua senha"
+              required
+            />
+          </div>
+          <div class="buttons">
+            <button id="create" onclick="return alert('Ainda não funciona')">
+              Crie sua conta
+            </button>
+          </div>
+          <p id="have-account">Já tem uma conta? <a href="#">Log in</a></p>
+        </form>
+        <button id="continue-google" onclick="alert('Ainda não funciona')">
+          <img src="/img/google.svg" />Continue com o Google
+        </button>
+      </div>
+    </main>
+    
+    <script src="script.js"></script>
+  </body>
+</html>

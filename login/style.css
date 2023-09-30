@@ -41,13 +41,9 @@ main {
   padding: 20px;
 }
 
-.bg > .logo > h1 {
-  color: var(--white, #fff);
-  font-size: 1.75rem;
-  font-style: italic;
-  font-weight: 700;
-  line-height: 1.75rem; /* 1.75rem */
-  /* letter-spacing: 0.175rem; */
+.bg > .logo > img {
+  width: auto;
+  height: 3rem;
 }
 
 .bg > .title > h3 {
@@ -64,7 +60,7 @@ main {
   font-size: 3.5rem;
   font-style: italic;
   font-weight: 300;
-  line-height: 4.2rem;
+  line-height: 3.5rem;
   overflow-wrap: break-word;
   word-break: break-word;
 
@@ -176,7 +172,7 @@ input[name="input"] {
   border-radius: 0.5rem;
   border: 1px solid var(--text-tertiary, #bebebf);
 
-  transition: 0.2s;
+  transition: 0.5s;
 }
 
 input[name="input"]:hover,

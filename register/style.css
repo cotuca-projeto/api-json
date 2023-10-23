@@ -32,21 +32,32 @@ main {
   background: linear-gradient(0deg, #050a24 0%, #050a24 100%), #d9d9d9;
 }
 
-.bg > .logo {
+.bg>.logo {
   display: flex;
-  width: 13.6875rem;
-  justify-content: space-between;
+  width: 364px;
+  height: 92px;
+  padding: 0px 28px;
+  justify-content: space-around;
   align-items: center;
 
-  padding: 20px;
+  padding: 25px 0px 0px 10px;
+
 }
 
-.bg > .logo > img {
+.bg>.logo>p {
+  color: #FFF;
+  font-size: 50px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+
+.bg>.logo>img {
   width: auto;
-  height: 3rem;
+  height: 5rem;
 }
 
-.bg > .title > h3 {
+.bg>.title>h3 {
   /* deixa no final da div */
   margin-top: 30%;
   margin-bottom: auto;
@@ -70,7 +81,7 @@ main {
   -webkit-text-fill-color: transparent;
 }
 
-.bg > .ellipse {
+.bg>.ellipse {
   width: 23.6875rem;
   height: 23.6875rem;
   flex-shrink: 0;
@@ -101,7 +112,7 @@ main {
   border-radius: 0.625rem;
 }
 
-.login > .title {
+.login>.title {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -109,11 +120,12 @@ main {
   align-self: stretch;
 }
 
-.login > .title > * {
+.login>.title>* {
   font-size: 1.75rem;
   font-style: normal;
   font-weight: 600;
-  line-height: 100%; /* 1.75rem */
+  line-height: 100%;
+  /* 1.75rem */
 }
 
 .submit {
@@ -124,7 +136,7 @@ main {
   align-self: stretch;
 }
 
-.submit > .email {
+.submit>.email {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -132,7 +144,7 @@ main {
   align-self: stretch;
 }
 
-.submit > .password {
+.submit>.password {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -140,7 +152,7 @@ main {
   align-self: stretch;
 }
 
-form > * > label {
+form>*>label {
   flex: 1 0 0;
   color: var(--text-secondary, #5a5a5d);
 
@@ -148,7 +160,8 @@ form > * > label {
   font-size: 1rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 100%; /* 1rem */
+  line-height: 100%;
+  /* 1rem */
   text-transform: capitalize;
 }
 
@@ -158,7 +171,7 @@ form > * > label {
   align-self: stretch;
 }
 
-.row > label {
+.row>label {
   flex: 1 0 0;
 }
 
@@ -190,7 +203,8 @@ input[name="input"]::placeholder {
   font-size: 0.875rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 100%; /* 0.875rem */
+  line-height: 100%;
+  /* 0.875rem */
 }
 
 #forget {
@@ -202,7 +216,8 @@ input[name="input"]::placeholder {
   font-size: 1rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 100%; /* 1rem */
+  line-height: 100%;
+  /* 1rem */
   text-transform: capitalize;
 }
 
@@ -214,7 +229,7 @@ input[name="input"]::placeholder {
   align-self: stretch;
 }
 
-.buttons > #create {
+.buttons>#create {
   display: flex;
   height: 3rem;
   padding: 1rem;
@@ -232,7 +247,8 @@ input[name="input"]::placeholder {
   font-size: 1rem;
   font-style: normal;
   font-weight: 600;
-  line-height: 100%; /* 1rem */
+  line-height: 100%;
+  /* 1rem */
   background: var(--primary, #007dfa);
 }
 
@@ -255,7 +271,8 @@ input[name="input"]::placeholder {
   font-size: 1rem;
   font-style: normal;
   font-weight: 600;
-  line-height: 100%; /* 1rem */
+  line-height: 100%;
+  /* 1rem */
 }
 
 #have-account {
@@ -265,18 +282,20 @@ input[name="input"]::placeholder {
   font-size: 1rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 100%; /* 1rem */
+  line-height: 100%;
+  /* 1rem */
   text-transform: capitalize;
 }
 
-#have-account > a {
+#have-account>a {
   color: var(--primary, #007dfa);
 
   /* body/large/regular */
   font-size: 1rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 100%; /* 1rem */
+  line-height: 100%;
+  /* 1rem */
   text-transform: capitalize;
 }
 
@@ -285,6 +304,7 @@ input[name="input"]::placeholder {
   .bg {
     display: none;
   }
+
   .login {
     width: 100vw;
     height: 85vh;
@@ -299,6 +319,7 @@ input[name="input"]::placeholder {
   .bg {
     display: none;
   }
+
   .login {
     width: 100vw;
     height: 85vh;
@@ -310,7 +331,7 @@ input[name="input"]::placeholder {
 
 /* Media query for screens larger than 1024px (e.g., desktops) */
 @media (max-width: 1219px) {
-  .logo > h3 {
+  .logo>h3 {
     font-size: 1rem;
   }
 }

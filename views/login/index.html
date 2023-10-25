@@ -12,7 +12,7 @@
 <body>
     <div class="logo">
         <p>TaskFlow</p>
-        <img src="../img/logoTaskFlowWhite.svg" alt="logoTaskFlowWhite">
+        <img src="../../public/logoTaskFlowWhite.svg" alt="logoTaskFlow">
     </div>
     <div class="ellipse" id="ellipse-2"></div>
     <main>
@@ -21,12 +21,12 @@
                 <!-- <p>Welcome Back</p> -->
                 <h3>Entre em sua conta aqui</h3>
             </div>
-            <form action="" method="get" class="submit">
+            <form action="" method="post" class="submit">
                 <div class="email">
                     <div class="row">
                         <label for="email" id="email-label">Email</label>
                     </div>
-                    <input type="email" name="input" id="email-field" placeholder="taskflow@gmail.com" required
+                    <input type="email" name="email" id="email-field" placeholder="taskflow@gmail.com" required
                         autocomplete="email" />
                 </div>
                 <div class="password">
@@ -34,18 +34,18 @@
                         <label for="password">Senha</label>
                         <a href="#" id="forget">Esqueceu sua senha?</a>
                     </div>
-                    <input type="text" name="input" id="password-field" placeholder="Digite sua senha" required
+                    <input type="text" name="password" id="password-field" placeholder="Digite sua senha" required
                         autocomplete="new-password" />
                 </div>
                 <div class="buttons">
-                    <button id="create" onclick="return alert('Ainda não funciona')">
+                    <button id="create" onclick="" type="submit">
                         Entrar
                     </button>
                 </div>
-                <p id="have-account">Não tem uma conta? <a href="#">Register</a></p>
+                <p id="have-account">Não tem uma conta? <a href="/register">Register</a></p>
             </form>
-            <button id="continue-google" onclick="alert('Ainda não funciona')">
-                <img src="/img/google.svg" />Continue com o Google
+            <button id="continue-google" onclick="">
+                <img src="../../public/google.svg" />Continue com o Google
             </button>
         </div>
     </main>

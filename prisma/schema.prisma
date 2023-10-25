@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model category {
+  category_id Int    @id(map: "PK_category")
+  user_id     Int
+  name        String @db.VarChar(50)
+  users       users  @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "FK_category_user_id")
+  task        task[]
+}
+
+model task {
+  task_id     Int         @id(map: "PK_task")
+  user_id     Int
+  title       String      @db.VarChar(100)
+  description String?     @db.VarChar(Max)
+  completed   Boolean
+  priority    Int         @db.TinyInt
+  category_id Int?
+  category    category?   @relation(fields: [category_id], references: [category_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_task_category_id")
+  users       users       @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "FK_task_user_id")
+  timeTable   timeTable[]
+}
+
+model users {
+  user_id       Int         @id(map: "PK_users")
+  first_name    String      @db.VarChar(50)
+  last_name     String      @db.VarChar(50)
+  username      String      @db.VarChar(50)
+  email         String      @db.VarChar(100)
+  password_hash String      @db.Char(64)
+  profle_image  Bytes?      @db.Image
+  category      category[]
+  task          task[]
+  timeTable     timeTable[]
+}
+
+model timeTable {
+  id Int @id @default(autoincrement())
+
+  updated_at DateTime  @default(now()) @db.DateTime
+  created_at DateTime  @default(now()) @db.DateTime
+  due_date   DateTime? @db.DateTime
+
+  user_id Int?
+  task_id Int?
+
+  users users? @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "FK_timeTable_user_id")
+  task  task?  @relation(fields: [task_id], references: [task_id], onUpdate: NoAction, map: "FK_timeTable_task_id")
+}

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>TaskFlow</title>
+</head>
+
+<body>
+    <div class="logo">
+        <p>TaskFlow</p>
+        <img src="../img/logoTaskFlowWhite.svg" alt="logoTaskFlowWhite">
+    </div>
+    <div class="ellipse" id="ellipse-2"></div>
+    <main>
+        <div class="login">
+            <div class="title">
+                <!-- <p>Welcome Back</p> -->
+                <h3>Entre em sua conta aqui</h3>
+            </div>
+            <form action="" method="get" class="submit">
+                <div class="email">
+                    <div class="row">
+                        <label for="email" id="email-label">Email</label>
+                    </div>
+                    <input type="email" name="input" id="email-field" placeholder="taskflow@gmail.com" required
+                        autocomplete="email" />
+                </div>
+                <div class="password">
+                    <div class="row">
+                        <label for="password">Senha</label>
+                        <a href="#" id="forget">Esqueceu sua senha?</a>
+                    </div>
+                    <input type="text" name="input" id="password-field" placeholder="Digite sua senha" required
+                        autocomplete="new-password" />
+                </div>
+                <div class="buttons">
+                    <button id="create" onclick="return alert('Ainda não funciona')">
+                        Entrar
+                    </button>
+                </div>
+                <p id="have-account">Não tem uma conta? <a href="#">Register</a></p>
+            </form>
+            <button id="continue-google" onclick="alert('Ainda não funciona')">
+                <img src="/img/google.svg" />Continue com o Google
+            </button>
+        </div>
+    </main>
+    <div class="ellipse" id="ellipse-1"></div>
+
+</body>
+
+</html>

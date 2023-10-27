@@ -1,11 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 body {
   box-sizing: border-box;
   margin: 0px;
   padding: 0px;
 
-  font-family: "Poppins", sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 button {
@@ -14,53 +14,52 @@ button {
 
 main {
   color: var(--text-primary, #101012);
+  display: inline-flex;
+  padding-right: 0px;
+  align-items: center;
+  gap: 10rem;
+  width: 100vw;
 }
 
 .bg {
   display: flex;
   position: relative;
-  width: 100vw;
+  width: 47vw;
   height: 100vh;
   flex-shrink: 0;
   flex-direction: column;
 
   background: linear-gradient(0deg, #050a24 0%, #050a24 100%), #d9d9d9;
-  align-items: center;
 }
 
-.bg > .logo {
+.bg>.logo {
   display: flex;
-  width: 16.5625rem;
-  height: 5.375rem;
-  /* justify-content: space-evenly; */
+  width: 364px;
+  height: 92px;
+  padding: 0px 28px;
+  justify-content: space-around;
   align-items: center;
-  flex-shrink: 0;
-  position: fixed;
 
-  z-index: 2;
+  padding: 25px 0px 0px 10px;
 
-  left: 3%;
-  top: 1%;
 }
 
-.bg > .logo > h1 {
-  color: var(--white, #fff);
-  font-size: 1.75rem;
-  font-style: italic;
+.bg>.logo>p {
+  color: #FFF;
+  font-size: 50px;
+  font-style: normal;
   font-weight: 700;
-  line-height: 1.75rem; /* 1.75rem */
-  /* letter-spacing: 0.175rem; */
-  z-index: 2;
+  line-height: normal;
 }
 
-.bg > .logo > img {
-  z-index: 2;
-  transform: scale(0.7);
-} 
+.bg>.logo>img {
+  width: auto;
+  height: 5rem;
+}
 
-.bg > .title > h3 {
+.bg>.title>h3 {
   /* deixa no final da div */
-  margin-top: 40%;
+  margin-top: 30%;
   margin-bottom: auto;
   margin-left: auto;
   margin-right: auto;
@@ -72,7 +71,7 @@ main {
   font-size: 3.5rem;
   font-style: italic;
   font-weight: 300;
-  line-height: 4.2rem;
+  line-height: 3.5rem;
   overflow-wrap: break-word;
   word-break: break-word;
 
@@ -82,7 +81,7 @@ main {
   -webkit-text-fill-color: transparent;
 }
 
-.bg > .ellipse {
+.bg>.ellipse {
   width: 23.6875rem;
   height: 23.6875rem;
   flex-shrink: 0;
@@ -93,7 +92,6 @@ main {
   filter: blur(275px);
 
   overflow: hidden;
-  z-index: 1;
 }
 
 #ellipse-1 {
@@ -101,35 +99,20 @@ main {
   position: fixed;
 
   top: 65%;
-  left: -5%;
-}
-
-#ellipse-2 {
-  /* deixa na parte de baixo da div */
-  position: fixed;
-
-  left: 78%;
-  top: -15%;
 }
 
 .login {
   display: flex;
-  width: 33.75rem;
-  height: 28.5rem;
-  padding: 4.5rem 2.3rem;
-  margin: auto auto;
+  width: 27rem;
+  height: 33.1875rem;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 2rem;
-  flex-shrink: 0;
-  border-radius: 0.5rem;
-  background: #FFF;
-  z-index: 2;
-  flex: 0 1;
+  border-radius: 0.625rem;
 }
 
-.login > .title {
+.login>.title {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -137,11 +120,12 @@ main {
   align-self: stretch;
 }
 
-.login > .title > * {
+.login>.title>* {
   font-size: 1.75rem;
   font-style: normal;
   font-weight: 600;
-  line-height: 100%; /* 1.75rem */
+  line-height: 100%;
+  /* 1.75rem */
 }
 
 .submit {
@@ -152,7 +136,7 @@ main {
   align-self: stretch;
 }
 
-.submit > .email {
+.submit>.email {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -160,7 +144,7 @@ main {
   align-self: stretch;
 }
 
-.submit > .password {
+.submit>.password {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -168,18 +152,7 @@ main {
   align-self: stretch;
 }
 
-.submit > .password > img {
-  position: relative;
-  top: -38%;
-  left: 90%;
-  cursor: pointer;
-}
-
-.hide {
-  display: none;
-}
-
-form > * > label {
+form>*>label {
   flex: 1 0 0;
   color: var(--text-secondary, #5a5a5d);
 
@@ -187,7 +160,8 @@ form > * > label {
   font-size: 1rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 100%; /* 1rem */
+  line-height: 100%;
+  /* 1rem */
   text-transform: capitalize;
 }
 
@@ -197,11 +171,11 @@ form > * > label {
   align-self: stretch;
 }
 
-.row > label {
+.row>label {
   flex: 1 0 0;
 }
 
-input[name="input"] {
+input {
   display: flex;
   padding: 0.75rem 1rem;
   align-items: center;
@@ -211,29 +185,17 @@ input[name="input"] {
   border-radius: 0.5rem;
   border: 1px solid var(--text-tertiary, #bebebf);
 
-  transition: 0.3s ease-in-out;
+  transition: 0.5s;
 }
 
-input[name="input"]:hover,
-input[name="input"]:focus,
-input[name="input"]:active {
+input:hover,
+input:focus,
+input:active {
   border-radius: 0.5rem;
   border: 3px solid var(--primary-weak, #e0effe);
 }
 
-.input-field {
-  width: 100%;
-  display: flex;
-}
-
-.input-field > img {
-  position: relative;
-  right: 10%;
-  flex: 0;
-  display: block;
-}
-
-input[name="input"]::placeholder {
+input::placeholder {
   flex: 1 0 0;
   color: var(--text-tertiary, #bebebf);
 
@@ -241,7 +203,8 @@ input[name="input"]::placeholder {
   font-size: 0.875rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 100%; /* 0.875rem */
+  line-height: 100%;
+  /* 0.875rem */
 }
 
 #forget {
@@ -253,8 +216,9 @@ input[name="input"]::placeholder {
   font-size: 1rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 100%; /* 1rem */
-  /* text-transform: capitalize; */
+  line-height: 100%;
+  /* 1rem */
+  text-transform: capitalize;
 }
 
 .buttons {
@@ -265,7 +229,7 @@ input[name="input"]::placeholder {
   align-self: stretch;
 }
 
-.buttons > #create {
+.buttons>#create {
   display: flex;
   height: 3rem;
   padding: 1rem;
@@ -283,7 +247,8 @@ input[name="input"]::placeholder {
   font-size: 1rem;
   font-style: normal;
   font-weight: 600;
-  line-height: 100%; /* 1rem */
+  line-height: 100%;
+  /* 1rem */
   background: var(--primary, #007dfa);
 }
 
@@ -306,68 +271,67 @@ input[name="input"]::placeholder {
   font-size: 1rem;
   font-style: normal;
   font-weight: 600;
-  line-height: 100%; /* 1rem */
-}
-
-.have-account {
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-  width: 100%;
+  line-height: 100%;
+  /* 1rem */
 }
 
 #have-account {
-  color: var(--text-tertiary, #9c9c9c);
+  color: var(--text-tertiary, #bebebf);
 
   /* body/large/regular */
   font-size: 1rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 100%; /* 1rem */
+  line-height: 100%;
+  /* 1rem */
   text-transform: capitalize;
-
 }
 
-.have-account > a {
+#have-account>a {
   color: var(--primary, #007dfa);
 
   /* body/large/regular */
   font-size: 1rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 100%; /* 1rem */
+  line-height: 100%;
+  /* 1rem */
   text-transform: capitalize;
-
-  height: min-content;
 }
 
 /* Media query for screens smaller than 768px (e.g., smartphones) */
 @media (max-width: 768px) {
-
-  .bg > .logo,
-  .bg > .ellipse {
+  .bg {
     display: none;
   }
-  .bg > .login {
-    display: flex;
+
+  .login {
     width: 100vw;
-    height: 100vh;
-    margin: 0;
-    flex: 1;
-    padding: 0;
-    border: none;
-    border-radius: 0;
+    height: 85vh;
+    padding: 5% 15%;
+    margin: auto;
+    margin-top: 5%;
   }
-
-  .bg > .login > * {
-    padding: 0 8%;
-  }
-
 }
 
 /* Media query for screens between 769px and 1024px (e.g., tablets) */
 @media (min-width: 769px) and (max-width: 1024px) {
-  .bg > .login {
-    transform: scale(1.2);
+  .bg {
+    display: none;
+  }
+
+  .login {
+    width: 100vw;
+    height: 85vh;
+    padding: 5% 15%;
+    margin: auto;
+    margin-top: 5%;
+  }
+}
+
+/* Media query for screens larger than 1024px (e.g., desktops) */
+@media (max-width: 1219px) {
+  .logo>h3 {
+    font-size: 1rem;
   }
 }

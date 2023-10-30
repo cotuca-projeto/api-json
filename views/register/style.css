@@ -19,12 +19,13 @@ main {
   align-items: center;
   gap: 10rem;
   width: 100vw;
+  height: 100vh;
 }
 
 .bg {
   display: flex;
   position: relative;
-  width: 47vw;
+  width: 50vw;
   height: 100vh;
   flex-shrink: 0;
   flex-direction: column;
@@ -59,12 +60,11 @@ main {
 
 .bg>.title>h3 {
   /* deixa no final da div */
-  margin-top: 30%;
+  margin-top: 55%;
   margin-bottom: auto;
   margin-left: auto;
   margin-right: auto;
 
-  width: auto;
   position: absolute;
   padding: 0px 15px;
 
@@ -103,12 +103,12 @@ main {
 
 .login {
   display: flex;
-  width: 27rem;
-  height: 33.1875rem;
+  /* width: 27rem; */
+  /* height: 33.1875rem; */
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 2rem;
+  /* gap: 2rem; */
   border-radius: 0.625rem;
 }
 
@@ -144,6 +144,27 @@ main {
   align-self: stretch;
 }
 
+.submit>.user {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  align-self: stretch;
+}
+
+.name {
+  width: 100%;
+}
+
+.name > * {
+  flex: 1;
+}
+
+.name > * > input {
+  flex: 1;
+  width: 65%;
+}
+
 .submit>.password {
   display: flex;
   flex-direction: column;
@@ -175,9 +196,21 @@ form>*>label {
   flex: 1 0 0;
 }
 
+.name {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: nowrap;
+  flex-direction: row;
+}
+
+.name> :first-child {
+  padding: 0px 5px 0px 0px;
+}
+
 input {
   display: flex;
   padding: 0.75rem 1rem;
+  /* width: 100%; */
   align-items: center;
   gap: 0.3125rem;
   align-self: stretch;

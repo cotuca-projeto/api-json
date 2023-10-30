@@ -1,7 +1,12 @@
 import path from "path";
 import express from "express";
 import { port, initConfig } from "./config";
+import { clearCache } from "./database/cacheIncludes";
+
 const router = express();
+
+// Limpar os Caches
+clearCache();
 
 // Inicialização das configurações
 initConfig(router);
@@ -22,6 +27,7 @@ router.post("/register", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "public"));
 
   const { email, password } = req.body;
+  
   res.render("register");
 });
 

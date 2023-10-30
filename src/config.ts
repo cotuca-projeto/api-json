@@ -25,3 +25,7 @@ export function initConfig(app: core.Express) {
   );
   app.set("views", path.join(__dirname, "..", "views"));
 }
+
+export const general = {
+  CACHE_DIR: path.join(__dirname, "..", "cache", "database.json"),
+};

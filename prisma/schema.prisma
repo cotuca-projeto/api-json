@@ -29,7 +29,7 @@ model task {
 }
 
 model users {
-  user_id       Int         @id(map: "PK_users")
+  user_id       Int         @id(map: "PK_users") @default(autoincrement())
   first_name    String      @db.VarChar(50)
   last_name     String      @db.VarChar(50)
   username      String      @db.VarChar(50)

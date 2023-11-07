@@ -8,49 +8,57 @@ datasource db {
 }
 
 model category {
-  category_id Int    @id(map: "PK_category")
+  category_id Int    @id(map: "PK__category__D54EE9B40EB118BC") @default(autoincrement())
   user_id     Int
   name        String @db.VarChar(50)
-  users       users  @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "FK_category_user_id")
+  users       users  @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "FK_CategoryUser")
   task        task[]
+
+  @@index([user_id], map: "IxCategoryUserID")
 }
 
 model task {
-  task_id     Int         @id(map: "PK_task")
+  task_id     Int       @id(map: "PK__task__0492148DFD567AE2") @default(autoincrement())
   user_id     Int
-  title       String      @db.VarChar(100)
-  description String?     @db.VarChar(Max)
-  completed   Boolean
-  priority    Int         @db.TinyInt
+  title       String    @db.VarChar(100)
+  description String?   @db.VarChar(Max)
+  due_date    DateTime? @db.DateTime
+  completed   String    @default("N", map: "DF__task__completed__04308F6E") @db.Char(1)
+  priority    Int       @default(0, map: "DF__task__priority__0524B3A7") @db.TinyInt
   category_id Int?
-  category    category?   @relation(fields: [category_id], references: [category_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_task_category_id")
-  users       users       @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "FK_task_user_id")
-  timeTable   timeTable[]
+  category    category? @relation(fields: [category_id], references: [category_id], onDelete: Cascade, onUpdate: NoAction, map: "FK_TaskCategory")
+  users       users     @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "FK_TaskUsers")
+  timeLog     timeLog[]
+
+  @@index([category_id], map: "IxTaskCategoryID")
+  @@index([user_id], map: "IxTaskUserID")
+}
+
+model timeLog {
+  id         Int      @id(map: "PK__timeLog__3213E83FB1814872") @default(autoincrement())
+  user_id    Int
+  task_id    Int?
+  updated_at DateTime @default(now(), map: "DF__timeLog__updated__09E968C4") @db.DateTime
+  created_at DateTime @default(now(), map: "DF__timeLog__created__0ADD8CFD") @db.DateTime
+  task       task?    @relation(fields: [task_id], references: [task_id], onDelete: Cascade, onUpdate: NoAction, map: "FK_TimeLogTask")
+  users      users    @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "FK_TimeLogUsers")
+
+  @@index([task_id], map: "IxTimeLogTaskID")
+  @@index([user_id], map: "IxtimeLogUserID")
 }
 
 model users {
-  user_id       Int         @id(map: "PK_users") @default(autoincrement())
-  first_name    String      @db.VarChar(50)
-  last_name     String      @db.VarChar(50)
-  username      String      @db.VarChar(50)
-  email         String      @db.VarChar(100)
-  password_hash String      @db.Char(64)
-  profle_image  Bytes?      @db.Image
+  user_id       Int        @id(map: "PK__users__B9BE370FCF1DDC98") @default(autoincrement())
+  first_name    String     @db.VarChar(50)
+  last_name     String     @db.VarChar(50)
+  username      String     @unique(map: "UQ__users__F3DBC572C37CB0B7") @db.VarChar(50)
+  email         String     @unique(map: "UQ__users__AB6E6164E69036A7") @db.VarChar(100)
+  password_hash String     @unique(map: "UQ__users__6F0B18C390C1CAFB") @db.Char(64)
+  profile_image Bytes?     @db.Image
   category      category[]
   task          task[]
-  timeTable     timeTable[]
-}
+  timeLog       timeLog[]
 
-model timeTable {
-  id Int @id @default(autoincrement())
-
-  updated_at DateTime  @default(now()) @db.DateTime
-  created_at DateTime  @default(now()) @db.DateTime
-  due_date   DateTime? @db.DateTime
-
-  user_id Int?
-  task_id Int?
-
-  users users? @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "FK_timeTable_user_id")
-  task  task?  @relation(fields: [task_id], references: [task_id], onUpdate: NoAction, map: "FK_timeTable_task_id")
+  @@index([email], map: "IxUsersEmail")
+  @@index([username], map: "IxUsersUsername")
 }

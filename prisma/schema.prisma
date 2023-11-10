@@ -8,7 +8,7 @@ datasource db {
 }
 
 model category {
-  category_id Int    @id(map: "PK__category__D54EE9B40EB118BC") @default(autoincrement())
+  category_id Int    @id(map: "PK__category__D54EE9B4627B3F1C") @default(autoincrement())
   user_id     Int
   name        String @db.VarChar(50)
   users       users  @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "FK_CategoryUser")
@@ -18,13 +18,13 @@ model category {
 }
 
 model task {
-  task_id     Int       @id(map: "PK__task__0492148DFD567AE2") @default(autoincrement())
+  task_id     Int       @id(map: "PK__task__0492148D8554B06B") @default(autoincrement())
   user_id     Int
   title       String    @db.VarChar(100)
   description String?   @db.VarChar(Max)
   due_date    DateTime? @db.DateTime
-  completed   String    @default("N", map: "DF__task__completed__04308F6E") @db.Char(1)
-  priority    Int       @default(0, map: "DF__task__priority__0524B3A7") @db.TinyInt
+  completed   String    @default("N", map: "DF__task__completed__7F80E8EA") @db.Char(1)
+  priority    Int       @default(0, map: "DF__task__priority__00750D23") @db.TinyInt
   category_id Int?
   category    category? @relation(fields: [category_id], references: [category_id], onDelete: Cascade, onUpdate: NoAction, map: "FK_TaskCategory")
   users       users     @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "FK_TaskUsers")
@@ -35,11 +35,11 @@ model task {
 }
 
 model timeLog {
-  id         Int      @id(map: "PK__timeLog__3213E83FB1814872") @default(autoincrement())
+  id         Int      @id(map: "PK__timeLog__3213E83F43A095B4") @default(autoincrement())
   user_id    Int
   task_id    Int?
-  updated_at DateTime @default(now(), map: "DF__timeLog__updated__09E968C4") @db.DateTime
-  created_at DateTime @default(now(), map: "DF__timeLog__created__0ADD8CFD") @db.DateTime
+  updated_at DateTime @default(now(), map: "DF__timeLog__updated__0539C240") @db.DateTime
+  created_at DateTime @default(now(), map: "DF__timeLog__created__062DE679") @db.DateTime
   task       task?    @relation(fields: [task_id], references: [task_id], onDelete: Cascade, onUpdate: NoAction, map: "FK_TimeLogTask")
   users      users    @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "FK_TimeLogUsers")
 
@@ -48,12 +48,12 @@ model timeLog {
 }
 
 model users {
-  user_id       Int        @id(map: "PK__users__B9BE370FCF1DDC98") @default(autoincrement())
+  user_id       Int        @id(map: "PK__users__B9BE370FB29F9188") @default(autoincrement())
   first_name    String     @db.VarChar(50)
   last_name     String     @db.VarChar(50)
-  username      String     @unique(map: "UQ__users__F3DBC572C37CB0B7") @db.VarChar(50)
-  email         String     @unique(map: "UQ__users__AB6E6164E69036A7") @db.VarChar(100)
-  password_hash String     @unique(map: "UQ__users__6F0B18C390C1CAFB") @db.Char(64)
+  username      String     @unique(map: "UQ__users__F3DBC5723DE2F473") @db.VarChar(50)
+  email         String     @unique(map: "UQ__users__AB6E61641CB6A205") @db.VarChar(100)
+  password_hash String     @unique(map: "UQ__users__6F0B18C3C7177CBB") @db.Char(64)
   profile_image Bytes?     @db.Image
   category      category[]
   task          task[]

@@ -4,7 +4,7 @@ import { WarningError } from "./WarningError";
 import { BadRequestError } from "./BadRequestError";
 import { Response } from "express";
 
-export async function handleError(error: any, app: Response) {
+export function handleError(error: any, app: Response) {
   if (error instanceof BadRequestError) {
     return app.status(400).json({
       status: 400,
@@ -12,7 +12,7 @@ export async function handleError(error: any, app: Response) {
       error: error.message,
     });
   } else if (error instanceof WarningError) {
-    console.error(error);
+    console.warn(error);
 
     return app.status(400).json({
       status: 400,
@@ -29,7 +29,7 @@ export async function handleError(error: any, app: Response) {
       error: error.message,
     });
   } else if (error.message === "not-authorized") {
-    console.error(error);
+    console.info(error);
 
     return app.status(401).json({
       status: 401,

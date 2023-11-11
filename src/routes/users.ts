@@ -23,4 +23,8 @@ routerUsers.get("/user/:id", async (req: Request, res: Response) => {
   controlerUsers.listById(req, res);
 });
 
+routerUsers.get("/users", async (req: Request, res: Response) => {
+  controlerUsers.listAllUsers(req, res);
+});
+
 export default routerUsers;

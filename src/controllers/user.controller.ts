@@ -5,7 +5,6 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export const controlerUsers = {
-
   register: async (req: Request, res: Response) => {
     const { email, first_name, last_name, password, username, profile_image } =
       req.query as unknown as IUser;
@@ -61,5 +60,9 @@ export const controlerUsers = {
       throw new BadRequestError("User not found");
     }
     res.status(200).json({ status: 200, info_user: user });
+  },
+  listAllUsers: async (req: Request, res: Response) => {
+    const users = await prisma.users.findMany();
+    res.status(200).json({ status: 200, info_users: users });
   },
 };

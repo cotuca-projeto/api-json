@@ -1,5 +1,4 @@
 import express, { NextFunction, Request, Response } from "express";
-import { handleError } from "./errors/handleError";
 import bodyParser from "body-parser";
 import path from "path";
 import routerUsers from "./routes/users";
@@ -28,13 +27,9 @@ app.set("views", path.join(__dirname, "public"));
 app.use(express.static("public"));
 
 // Iniciado as rotas
-try {
-  app.get("/", (req: Request, res: Response, next: NextFunction) => {
-    res.status(200).json({ status: 200, message: "Ok!" });
-    app.render("index.html");
-  });
+app.get("/", (req: Request, res: Response, next: NextFunction) => {
+  res.status(200).json({ status: 200, message: "Ok!" });
+  app.render("index.html");
+});
 
-  app.use("/api/users", routerUsers);
-} catch (error) {
-  handleError(error, app.response);
-}
+app.use("/api/users", routerUsers);

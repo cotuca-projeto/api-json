@@ -6,3 +6,9 @@ export interface IUser {
     last_name: string;
     profile_image?: string | null;
 }
+
+export interface ITask {
+    title: string;
+    description: string;
+    user_id: number;
+}

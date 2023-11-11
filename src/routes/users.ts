@@ -12,19 +12,31 @@ routerUsers.get("/test", (req: Request, res: Response) => {
 });
 
 routerUsers.post("/register", async (req: Request, res: Response) => {
-  controlerUsers.register(req, res);
+  await controlerUsers.register(req, res);
 });
 
-routerUsers.delete("/user/:id", async (req: Request, res: Response) => {
-  controlerUsers.delete(req, res);
+routerUsers.delete("/delete", async (req: Request, res: Response) => {
+  await controlerUsers.deletebyId(req, res);
 });
 
-routerUsers.get("/user/:id", async (req: Request, res: Response) => {
-  controlerUsers.listById(req, res);
+routerUsers.delete("/deleteAll", async (req: Request, res: Response) => {
+  await controlerUsers.deleteAll(req, res);
 });
 
-routerUsers.get("/users", async (req: Request, res: Response) => {
-  controlerUsers.listAllUsers(req, res);
+routerUsers.get("/find", async (req: Request, res: Response) => {
+  await controlerUsers.findById(req, res);
+});
+
+routerUsers.get("/all", async (req: Request, res: Response) => {
+  await controlerUsers.listAllUsers(req, res);
+});
+
+routerUsers.put("/updateimage", async (req: Request, res: Response) => {
+  await controlerUsers.updateProfileImage(req, res);
+});
+
+routerUsers.put("/forgotpassword", async (req: Request, res: Response) => {
+  await controlerUsers.forgetPassword(req, res);
 });
 
 export default routerUsers;

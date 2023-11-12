@@ -3,6 +3,8 @@ import bodyParser from "body-parser";
 import path from "path";
 import routerUsers from "./routes/users";
 import _templateRouter from "./routes/_template";
+import routerTasks from "./routes/task";
+import indexRouter from "./routes/router";
 
 // Iniciado a porta do servidor
 const port: number = (process.env.PORT as unknown as number) || 3000;
@@ -33,3 +35,7 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use("/api/users", routerUsers);
+
+app.use("/api", indexRouter);
+
+app.use("/api/tasks", routerTasks);

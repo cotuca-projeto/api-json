@@ -57,14 +57,14 @@ export const controlerUsers = {
           email: email,
           first_name: first_name,
           last_name: last_name,
-          password_hash: password,
+          password_hash: password.replace(/\s/g, ""),
           username: username,
-          timeLog: {
-            create: {
-              created_at: new Date(),
-              updated_at: new Date(),
-            },
-          },
+          // timeLog: { // já tem o trigger no banco de dados por isso desativei
+          //   create: {
+          //     created_at: new Date(),
+          //     updated_at: new Date(),
+          //   },
+          // },
           profile_image: image || null,
         },
       })
@@ -123,18 +123,17 @@ export const controlerUsers = {
       .status(200)
       .json({ status: 200, Message: "User deleted!", findUser });
   },
-  deleteAll: async (req: Request, res: Response) => {
-    const users = await prisma.users.deleteMany();
-    return res
-      .status(200)
-      .json({ status: 200, Message: "Users deleted!", users });
-  },
   findById: async (req: Request, res: Response) => {
     const id: number = parseInt(req.query.id as string);
     const user = await prisma.users
       .findUnique({
         where: {
           user_id: id,
+        },
+        include: {
+          timeLog: true,
+          category: true,
+          task: true,
         },
       })
       .catch((err) => {
@@ -150,12 +149,17 @@ export const controlerUsers = {
     return res.status(200).json({ status: 200, info_user: user });
   },
   listAllUsers: async (req: Request, res: Response) => {
-    const users = await prisma.users.findMany();
-    res.status(200).json({ status: 200, info_users: users });
+    const users = await prisma.users.findMany({
+      include: {
+        timeLog: true,
+        category: true,
+        task: true,
+      },
+    });
+    return res.status(200).json({ status: 200, users });
   },
   updateProfileImage: async (req: Request, res: Response) => {
     const { email, password, profile_image } = req.query as unknown as IUser;
-    const id: number = parseInt(req.params.id);
 
     const user = await prisma.users
       .findUnique({
@@ -165,6 +169,9 @@ export const controlerUsers = {
         },
         include: {
           timeLog: true,
+          category: true,
+          task: true,
+          _count: true,
         },
       })
       .catch((err) => {
@@ -175,12 +182,27 @@ export const controlerUsers = {
         }
       });
 
+    if (!user) {
+      return res.status(302).json({ status: 302, Message: "User not found!" });
+    }
+
     let image: Buffer | null = null;
 
     if (profile_image) {
-      image = Buffer.from(profile_image, "base64");
-    } else {
-      image = user?.profile_image || null;
+      const result = await fetch(profile_image);
+      const buffer = await result.arrayBuffer();
+
+      const imageSizeInMB = buffer.byteLength / (1024 * 1024);
+
+      console.log(imageSizeInMB);
+
+      if (imageSizeInMB > 3) {
+        return res
+          .status(400)
+          .json({ status: 400, Message: "Image size exceeds 3 MB limit." });
+      }
+
+      image = Buffer.from(buffer);
     }
 
     const userUpdate = await prisma.users.update({
@@ -188,12 +210,16 @@ export const controlerUsers = {
         timeLog: true,
       },
       where: {
-        user_id: id,
+        user_id: user.user_id,
       },
       data: {
-        profile_image: image,
+        profile_image: image!,
       },
     });
+
+    return res
+      .status(200)
+      .json({ status: 200, Message: "Image updated!", userUpdate });
   },
   forgetPassword: async (req: Request, res: Response) => {
     const { email, username, password } = req.query as unknown as IUser;
@@ -226,5 +252,33 @@ export const controlerUsers = {
     });
 
     return res.status(200).json({ status: 200, Message: "Password changed!" });
+  },
+  getImage: async (req: Request, res: Response) => {
+    const { email } = req.query as unknown as IUser;
+
+    const user = await prisma.users.findUnique({
+      where: {
+        email: email,
+      },
+      select: {
+        profile_image: true,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ status: 404, message: "User not found!" });
+    }
+
+    if (!user.profile_image) {
+      return res
+        .status(404)
+        .json({ status: 404, message: "Profile image not found!" });
+    }
+
+    const byteArray = new Uint8Array(user.profile_image);
+    const buffer = Buffer.from(byteArray);
+
+    res.contentType("image/jpeg");
+    res.send(buffer);
   },
 };

@@ -10,5 +10,5 @@ export interface IUser {
 export interface ITask {
     title: string;
     description: string;
-    user_id: number;
+    user: number;
 }

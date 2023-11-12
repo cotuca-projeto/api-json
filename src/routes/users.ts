@@ -19,10 +19,6 @@ routerUsers.delete("/delete", async (req: Request, res: Response) => {
   await controlerUsers.deletebyId(req, res);
 });
 
-routerUsers.delete("/deleteAll", async (req: Request, res: Response) => {
-  await controlerUsers.deleteAll(req, res);
-});
-
 routerUsers.get("/find", async (req: Request, res: Response) => {
   await controlerUsers.findById(req, res);
 });
@@ -33,6 +29,10 @@ routerUsers.get("/all", async (req: Request, res: Response) => {
 
 routerUsers.put("/updateimage", async (req: Request, res: Response) => {
   await controlerUsers.updateProfileImage(req, res);
+});
+
+routerUsers.get("/getimage", async (req: Request, res: Response) => {
+  await controlerUsers.getImage(req, res);
 });
 
 routerUsers.put("/forgotpassword", async (req: Request, res: Response) => {

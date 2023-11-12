@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 export const controlerUsers = {
   register: async (req: Request, res: Response) => {
-    const { email, first_name, last_name, password, username, profile_image } =
+    const { email, first_name, last_name, password, username, photo } =
       req.query as unknown as IUser;
 
     if (!email || !first_name || !last_name || !password || !username) {
@@ -23,8 +23,8 @@ export const controlerUsers = {
 
     let image: Buffer | null = null;
 
-    if (profile_image) {
-      image = Buffer.from(profile_image, "base64");
+    if (photo) {
+      image = Buffer.from(photo, "base64");
     }
 
     const emailExisted = await prisma.users.findUnique({
@@ -73,7 +73,7 @@ export const controlerUsers = {
           err.meta.cause === "Record to insert already exists." ||
           err.meta.target
         ) {
-          res
+          return res
             .status(401)
             .json({ status: 401, Message: "User already exists!" });
         } else {
@@ -159,7 +159,7 @@ export const controlerUsers = {
     return res.status(200).json({ status: 200, users });
   },
   updateProfileImage: async (req: Request, res: Response) => {
-    const { email, password, profile_image } = req.query as unknown as IUser;
+    const { email, password, photo } = req.query as unknown as IUser;
 
     const user = await prisma.users
       .findUnique({
@@ -188,8 +188,8 @@ export const controlerUsers = {
 
     let image: Buffer | null = null;
 
-    if (profile_image) {
-      const result = await fetch(profile_image);
+    if (photo) {
+      const result = await fetch(photo);
       const buffer = await result.arrayBuffer();
 
       const imageSizeInMB = buffer.byteLength / (1024 * 1024);

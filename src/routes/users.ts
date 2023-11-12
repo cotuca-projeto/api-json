@@ -18,7 +18,7 @@ routerUsers.post("/register", async (req: Request, res: Response) => {
 routerUsers.delete("/delete", async (req: Request, res: Response) => {
   await controlerUsers.deletebyId(req, res);
 });
-
+  
 routerUsers.get("/find", async (req: Request, res: Response) => {
   await controlerUsers.findById(req, res);
 });

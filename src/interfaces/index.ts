@@ -4,7 +4,7 @@ export interface IUser {
     username: string;
     first_name: string;
     last_name: string;
-    profile_image?: string | null;
+    photo?: string | null;
 }
 
 export interface ITask {

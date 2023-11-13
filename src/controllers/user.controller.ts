@@ -281,4 +281,26 @@ export const controlerUsers = {
     res.contentType("image/jpeg");
     res.send(buffer);
   },
+  login: async (req: Request, res: Response) => {
+    const { email, password } = req.query as unknown as IUser;
+
+    const user = await prisma.users.findUnique({
+      where: {
+        email: email,
+        password_hash: password,
+      },
+      include: {
+        timeLog: true,
+        category: true,
+        task: true,
+        _count: true,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ status: 404, message: "User not found!" });
+    }
+
+    return res.status(200).json({ status: 200, user });
+  },
 };

@@ -14,7 +14,7 @@ const app = express();
 
 // Iniciado a comunicação com o servidor
 app.listen(port, () =>
-  console.log(`Server running on ${port}! https://localhost:${port}`)
+  console.log(`Server running on ${port}! http://localhost:${port}`)
 );
 
 // Iniciado configurações do express

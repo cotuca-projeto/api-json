@@ -1,5 +1,6 @@
 import { Request, Response, Router } from "express";
 import { controlerUsers } from "../controllers/user.controller";
+import { checkToken } from "../middlewares/jwt";
 
 const routerUsers = Router();
 
@@ -19,21 +20,29 @@ routerUsers.delete("/delete", async (req: Request, res: Response) => {
   await controlerUsers.deletebyId(req, res);
 });
 
-routerUsers.get("/find", async (req: Request, res: Response) => {
+routerUsers.get("/find", checkToken, async (req: Request, res: Response) => {
   await controlerUsers.findById(req, res);
 });
 
-routerUsers.get("/all", async (req: Request, res: Response) => {
+routerUsers.get("/all", checkToken, async (req: Request, res: Response) => {
   await controlerUsers.listAllUsers(req, res);
 });
 
-routerUsers.put("/updateimage", async (req: Request, res: Response) => {
-  await controlerUsers.updateProfileImage(req, res);
-});
+routerUsers.put(
+  "/updateimage",
+  checkToken,
+  async (req: Request, res: Response) => {
+    await controlerUsers.updateProfileImage(req, res);
+  }
+);
 
-routerUsers.get("/getimage", async (req: Request, res: Response) => {
-  await controlerUsers.getImage(req, res);
-});
+routerUsers.get(
+  "/getimage",
+  checkToken,
+  async (req: Request, res: Response) => {
+    await controlerUsers.getImage(req, res);
+  }
+);
 
 routerUsers.put("/forgotpassword", async (req: Request, res: Response) => {
   await controlerUsers.forgetPassword(req, res);

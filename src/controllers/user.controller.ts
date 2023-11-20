@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { IUser } from "../interfaces";
 import { PrismaClient } from "@prisma/client";
+import { createToken } from "../middlewares/jwt";
+import sharp from "sharp";
 const prisma = new PrismaClient();
 
 export const controlerUsers = {
@@ -57,7 +59,7 @@ export const controlerUsers = {
           email: email,
           first_name: first_name,
           last_name: last_name,
-          password_hash: password.replace(/\s/g, ""),
+          password_hash: password,
           username: username,
           // timeLog: { // já tem o trigger no banco de dados por isso desativei
           //   create: {
@@ -80,9 +82,19 @@ export const controlerUsers = {
           res.status(500).json({ status: 500, Message: "Internal error!" });
         }
       });
+
+    const userWithoutPassword = {
+      ...user,
+      password_hash: undefined,
+    };
+
     return res
       .status(201)
-      .json({ status: 201, Message: "User created!", log: user });
+      .json({
+        status: 201,
+        Message: "User created!",
+        user: userWithoutPassword,
+      });
   },
   deletebyId: async (req: Request, res: Response) => {
     const id: number = parseInt(req.query.id as string);
@@ -119,9 +131,7 @@ export const controlerUsers = {
       });
     }
 
-    return res
-      .status(200)
-      .json({ status: 200, Message: "User deleted!", findUser });
+    return res.status(200).json({ status: 200, Message: "User deleted!" });
   },
   findById: async (req: Request, res: Response) => {
     const id: number = parseInt(req.query.id as string);
@@ -146,7 +156,7 @@ export const controlerUsers = {
 
     if (!user)
       return res.status(302).json({ status: 302, Message: "User not found!" });
-    return res.status(200).json({ status: 200, info_user: user });
+    return res.status(200).json({ status: 200, message: user });
   },
   listAllUsers: async (req: Request, res: Response) => {
     const users = await prisma.users.findMany({
@@ -156,8 +166,15 @@ export const controlerUsers = {
         task: true,
       },
     });
-    return res.status(200).json({ status: 200, users });
+
+    const usersWithoutPassword = users.map((user) => {
+      const { password_hash, ...userWithoutPassword } = user;
+      return userWithoutPassword;
+    });
+
+    return res.status(200).json({ status: 200, users: usersWithoutPassword });
   },
+
   updateProfileImage: async (req: Request, res: Response) => {
     const { email, password, photo } = req.query as unknown as IUser;
 
@@ -194,15 +211,17 @@ export const controlerUsers = {
 
       const imageSizeInMB = buffer.byteLength / (1024 * 1024);
 
-      console.log(imageSizeInMB);
-
       if (imageSizeInMB > 3) {
         return res
           .status(400)
           .json({ status: 400, Message: "Image size exceeds 3 MB limit." });
       }
 
-      image = Buffer.from(buffer);
+      const resizedImageBuffer = await sharp(buffer)
+        .resize({ width: 3 * 100, height: 4 * 100 })
+        .toBuffer();
+
+      image = Buffer.from(resizedImageBuffer);
     }
 
     const userUpdate = await prisma.users.update({
@@ -254,11 +273,11 @@ export const controlerUsers = {
     return res.status(200).json({ status: 200, Message: "Password changed!" });
   },
   getImage: async (req: Request, res: Response) => {
-    const { email } = req.query as unknown as IUser;
+    const { id } = req.query as unknown as IUser;
 
     const user = await prisma.users.findUnique({
       where: {
-        email: email,
+        user_id: id,
       },
       select: {
         profile_image: true,
@@ -301,6 +320,8 @@ export const controlerUsers = {
       return res.status(404).json({ status: 404, message: "User not found!" });
     }
 
-    return res.status(200).json({ status: 200, user });
+    return res
+      .status(200)
+      .json({ status: 200, user, token: createToken(user) });
   },
 };

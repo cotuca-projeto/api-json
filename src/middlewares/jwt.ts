@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 
-const secret = process.env.SECRET || null;
+const secret = process.env.TOKEN ?? null;
 
 export function checkToken(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization;

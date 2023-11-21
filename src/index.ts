@@ -6,10 +6,9 @@ import _templateRouter from "./routes/_template";
 import routerTasks from "./routes/task";
 import indexRouter from "./routes/router";
 import cors from "cors";
-import { error } from "console";
 
 // Iniciado a porta do servidor
-const port: number = (process.env.PORT as unknown as number) || 3000;
+const port: number = (process.env.PORT as unknown as number) || 3001;
 
 // Executando o express (API-RestFull)
 const app = express();

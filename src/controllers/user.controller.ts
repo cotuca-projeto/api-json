@@ -68,7 +68,7 @@ export const controlerUsers = {
           //     updated_at: new Date(),
           //   },
           // },
-          profile_image: image || null,
+          profile_image: image ?? null,
         },
       })
       .catch((err) => {
@@ -171,7 +171,7 @@ export const controlerUsers = {
       return userWithoutPassword;
     });
 
-    return res.status(200).json({ status: 200, users });
+    return res.status(200).json({ status: 200, user: usersWithoutPassword });
   },
 
   updateProfileImage: async (req: Request, res: Response) => {

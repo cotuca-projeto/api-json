@@ -16,4 +16,8 @@ routerTasks.delete(
   }
 );
 
+routerTasks.get("/gettasks", checkToken, async (req: Request, res: Response) => {
+  await controllerTask.getTasks(req, res);
+});
+
 export default routerTasks;

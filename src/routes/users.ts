@@ -24,7 +24,7 @@ routerUsers.get("/find", checkToken, async (req: Request, res: Response) => {
   await controlerUsers.findById(req, res);
 });
 
-routerUsers.get("/all", checkToken, async (req: Request, res: Response) => {
+routerUsers.get("/all", async (req: Request, res: Response) => {
   await controlerUsers.listAllUsers(req, res);
 });
 
@@ -48,7 +48,7 @@ routerUsers.put("/forgotpassword", async (req: Request, res: Response) => {
   await controlerUsers.forgetPassword(req, res);
 });
 
-routerUsers.put("/login", async (req: Request, res: Response) => {
+routerUsers.post("/login", async (req: Request, res: Response) => {
   await controlerUsers.login(req, res);
 });
 

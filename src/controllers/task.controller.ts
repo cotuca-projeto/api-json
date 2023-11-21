@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import { ITask } from "../interfaces";
+import jwt, { JwtPayload } from "jsonwebtoken";
 const prisma = new PrismaClient();
 
 export const controllerTask = {
   create: async (req: Request, res: Response) => {
-    const { title, description, user } = req.query as unknown as ITask;
+    const { title, description, user } = req.body as unknown as ITask;
 
     if (!title || !description || !user) {
       const Verification = {
@@ -47,7 +48,7 @@ export const controllerTask = {
   },
 
   deletebyId: async (req: Request, res: Response) => {
-    const id = parseInt(req.query.id as string);
+    const id = parseInt(req.body.id as string);
 
     if (!id) {
       return res
@@ -77,5 +78,36 @@ export const controllerTask = {
     return res
       .status(200)
       .json({ status: 200, Message: "Task deleted!", task });
+  },
+
+  getTasks: async (req: Request, res: Response) => {
+    const AuthToken = req.headers.authorization?.split(" ")[1];
+
+    const payload = jwt.decode(AuthToken as string) as JwtPayload;
+
+    if (!payload) {
+      return res
+        .status(400)
+        .json({ status: 400, Message: "Bad request!", payload });
+    }
+
+    return res.json({ payload });
+
+    const tasks = await prisma.task
+      .findMany({
+        where: {
+          user_id: payload.id,
+        },
+        include: {
+          category: true,
+        },
+      })
+      .then(() => {
+        res.status(404).json({ status: 404, Message: "Not found!" });
+      });
+
+    return res
+      .status(200)
+      .json({ status: 200, Message: "Tasks Found!", tasks });
   },
 };

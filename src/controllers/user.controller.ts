@@ -326,8 +326,17 @@ export const controlerUsers = {
       return res.status(404).json({ status: 404, message: "User not found!" });
     }
 
+    const userWithoutPassword = {
+      ...user,
+      password_hash: undefined,
+    };
+
     return res
       .status(200)
-      .json({ status: 200, user, token: createToken(user) });
+      .json({
+        status: 200,
+        user: userWithoutPassword,
+        token: createToken(user),
+      });
   },
 };

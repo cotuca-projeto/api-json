@@ -56,4 +56,22 @@ indexRouter.get("/validate", async (req: Request, res: Response) => {
   }
 });
 
+indexRouter.get("/connection", async (req: Request, res: Response) => {
+  const connection = prisma.$connect()
+
+  if (!connection) {
+    return res.status(500).json({
+      status: 500,
+      Message: "Connnection Failed!"
+    })
+  } else {
+    return res.status(200).json({
+      status: 200,
+      Message: connection
+    })
+  }
+
+
+})
+
 export default indexRouter;

@@ -173,7 +173,6 @@ export const controlerUsers = {
 
     return res.status(200).json({ status: 200, user: usersWithoutPassword });
   },
-
   updateProfileImage: async (req: Request, res: Response) => {
     const { email, password, photo } = req.body as unknown as IUser;
 
@@ -326,17 +325,21 @@ export const controlerUsers = {
       return res.status(404).json({ status: 404, message: "User not found!" });
     }
 
+    const task = await prisma.task.findMany({
+      where: {
+        user_id: user.user_id,
+      },
+    });
+
     const userWithoutPassword = {
       ...user,
       password_hash: undefined,
     };
 
-    return res
-      .status(200)
-      .json({
-        status: 200,
-        user: userWithoutPassword,
-        token: createToken(user),
-      });
+    return res.status(200).json({
+      status: 200,
+      user: userWithoutPassword,
+      token: createToken(user, task ? { ...task } : null),
+    });
   },
 };

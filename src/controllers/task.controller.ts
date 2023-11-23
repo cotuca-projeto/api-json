@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
-import { ITask } from "../interfaces";
+import { ITask, IUser } from "../interfaces";
 import jwt, { JwtPayload } from "jsonwebtoken";
 const prisma = new PrismaClient();
 
@@ -91,23 +91,28 @@ export const controllerTask = {
         .json({ status: 400, Message: "Bad request!", payload });
     }
 
-    return res.json({ payload });
-
     const tasks = await prisma.task
       .findMany({
         where: {
-          user_id: payload.id,
+          user_id: payload.id as IUser["id"],
         },
         include: {
           category: true,
         },
       })
-      .then(() => {
-        res.status(404).json({ status: 404, Message: "Not found!" });
-      });
+
+    if (!tasks) {
+      return res.status(404).json({
+        status: 200, Message: "Tasks not Found!"
+      })
+    }
 
     return res
       .status(200)
       .json({ status: 200, Message: "Tasks Found!", tasks });
   },
+
+  updateTasks: async (req: Request, res: Response) => {
+
+  }
 };

@@ -1,3 +1,4 @@
+import { task, users } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 
@@ -22,7 +23,7 @@ export function checkToken(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export const createToken = (user: any) => {
+export const createToken = (user: users, task: task | null) => {
   if (!secret) {
     return null;
   }
@@ -34,6 +35,7 @@ export const createToken = (user: any) => {
       first_name: user.first_name,
       last_name: user.last_name,
       photo: user.profile_image || null,
+      tasks: {...task}
     },
     secret
   );

@@ -23,10 +23,13 @@ export function checkToken(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export const createToken = (user: users, task: task | null) => {
+export const createToken = (user: users, tasks: task[] | null) => {
   if (!secret) {
     return null;
   }
+
+  const userTasks = tasks ? { tasks } : null;
+
   return jwt.sign(
     {
       id: user.user_id,
@@ -35,7 +38,7 @@ export const createToken = (user: users, task: task | null) => {
       first_name: user.first_name,
       last_name: user.last_name,
       photo: user.profile_image || null,
-      tasks: {...task}
+      ...userTasks,
     },
     secret
   );

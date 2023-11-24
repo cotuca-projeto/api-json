@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IUser } from "../interfaces";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, task } from "@prisma/client";
 import { createToken } from "../middlewares/jwt";
 import sharp from "sharp";
 import jwt, { JwtPayload } from "jsonwebtoken";
@@ -339,7 +339,7 @@ export const controlerUsers = {
     return res.status(200).json({
       status: 200,
       user: userWithoutPassword,
-      token: createToken(user, task ? { ...task } : null),
+      token: createToken(user, task ? (task) : null),
     });
   },
 };

@@ -339,7 +339,7 @@ export const controlerUsers = {
     return res.status(200).json({
       status: 200,
       user: userWithoutPassword,
-      token: createToken(user, task ? { ...task } : null),
+      token: createToken(user, task ? task : null),
     });
   },
 };

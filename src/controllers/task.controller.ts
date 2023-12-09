@@ -113,7 +113,7 @@ export const controllerTask = {
     if (!payload?.tasks)
       return res.status(400).json({ message: "Not Content tasks!" });
 
-    const id = parseInt(req.query.id as string);
+    const id = parseInt(req.params.id as string);
 
     let element: number = 0;
 

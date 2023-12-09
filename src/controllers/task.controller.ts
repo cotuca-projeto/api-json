@@ -107,6 +107,37 @@ export const controllerTask = {
     return res.status(200).json({ message: "Tasks Found!", tasks });
   },
 
+  getById: async (req: Request, res: Response) => {
+    const payload = convertTokenToJson(req);
+
+    if (!payload?.tasks)
+      return res.status(400).json({ message: "Not Content tasks!" });
+
+    const id = parseInt(req.query.id as string);
+
+    let element: number = 0;
+
+    payload.tasks.map((e) => {
+      if (e.id === id) {
+        element = e.id;
+      }
+    });
+
+    if (!id || element !== id) {
+      return res.status(400).json({ message: "Bad Request!" });
+    }
+
+    const taskData = await prisma.task.findUnique({
+      where: {
+        task_id: element ?? id,
+      },
+    });
+
+    if (!taskData) return res.status(404).json({ message: "Not found!" });
+
+    return res.status(200).json({ message: "Ok!", data: taskData });
+  },
+
   updateTasks: async (req: Request, res: Response) => {
     const payload = convertTokenToJson(req);
 

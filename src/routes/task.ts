@@ -16,13 +16,17 @@ routerTasks.delete(
   }
 );
 
-routerTasks.get(
+routerTasks.post(
   "/gettasks",
   checkToken,
   async (req: Request, res: Response) => {
     await controllerTask.getTasks(req, res);
   }
 );
+
+routerTasks.post(":id", checkToken, async (req: Request, res: Response) => {
+  await controllerTask.getById(req, res);
+});
 
 routerTasks.get("/update", checkToken, async (req: Request, res: Response) => {
   await controllerTask.updateTasks(req, res);

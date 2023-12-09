@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
+import { IUser } from "../interfaces";
 const prisma = new PrismaClient();
 
 const indexRouter = Router();
@@ -49,7 +50,15 @@ indexRouter.get("/validate", async (req: Request, res: Response) => {
       return res.status(401).send({ message: "No secret provided" });
     }
     jwt.verify(token, process.env.SECRET);
-    const user = jwt.decode(token);
+    
+    const user = jwt.decode(token) as IUser;
+    if(!user) return null;
+    const newValue = await prisma.users.findUnique({
+      where: {
+        user_id: user.id,
+        
+      }
+    })
     return res.status(200).send({ message: "Token Valid", user });
   } catch (e: any) {
     return res.status(400).send({ message: "Token Invalid" });

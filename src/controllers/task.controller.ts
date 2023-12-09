@@ -1,22 +1,22 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
-import { ITask, IUser } from "../interfaces";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import { ITask } from "../interfaces";
+import { convertTokenToJson } from "../utils";
 const prisma = new PrismaClient();
 
 export const controllerTask = {
   create: async (req: Request, res: Response) => {
-    const { title, description, user } = req.body as unknown as ITask;
+    const { title, description, user } = req.query as unknown as ITask;
 
     if (!title || !description || !user) {
-      const Verification = {
+      const verification = {
         title: title || null,
         description: description || null,
         user_id: user || null,
       };
       return res
         .status(400)
-        .json({ status: 400, Message: "Bad request!", Verification });
+        .json({ status: 400, Message: "Bad request!", verification });
     }
 
     const task = await prisma.task
@@ -48,7 +48,7 @@ export const controllerTask = {
   },
 
   deletebyId: async (req: Request, res: Response) => {
-    const id = parseInt(req.body.id as string);
+    const id = parseInt(req.query.id as string);
 
     if (!id) {
       return res
@@ -81,9 +81,7 @@ export const controllerTask = {
   },
 
   getTasks: async (req: Request, res: Response) => {
-    const AuthToken = req.headers.authorization?.split(" ")[1];
-
-    const payload = jwt.decode(AuthToken as string) as JwtPayload;
+    const payload = convertTokenToJson(req);
 
     if (!payload) {
       return res
@@ -91,28 +89,101 @@ export const controllerTask = {
         .json({ status: 400, Message: "Bad request!", payload });
     }
 
-    const tasks = await prisma.task
-      .findMany({
-        where: {
-          user_id: payload.id as IUser["id"],
-        },
-        include: {
-          category: true,
-        },
-      })
+    const tasks = await prisma.task.findMany({
+      where: {
+        user_id: payload.id,
+      },
+      include: {
+        category: true,
+      },
+    });
 
     if (!tasks) {
-      return res.status(404).json({
-        status: 200, Message: "Tasks not Found!"
-      })
+      return res.status(204).json({
+        Message: "Tasks not Found!",
+      });
     }
 
-    return res
-      .status(200)
-      .json({ status: 200, Message: "Tasks Found!", tasks });
+    return res.status(200).json({ message: "Tasks Found!", tasks });
+  },
+
+  getById: async (req: Request, res: Response) => {
+    const payload = convertTokenToJson(req);
+
+    if (!payload?.tasks)
+      return res.status(400).json({ message: "Not Content tasks!" });
+
+    const id = parseInt(req.params.id as string);
+
+    let element: number = 0;
+
+    payload.tasks.map((e) => {
+      if (e.id === id) {
+        element = e.id;
+      }
+    });
+
+    if (!id || element !== id) {
+      return res.status(400).json({ message: "Bad Request!" });
+    }
+
+    const taskData = await prisma.task.findUnique({
+      where: {
+        task_id: element ?? id,
+      },
+    });
+
+    if (!taskData) return res.status(404).json({ message: "Not found!" });
+
+    return res.status(200).json({ message: "Ok!", data: taskData });
   },
 
   updateTasks: async (req: Request, res: Response) => {
+    const payload = convertTokenToJson(req);
 
-  }
+    const { title, description } = req.query;
+
+    const task_id = req.query.task_id as unknown as number;
+
+    if (!payload?.tasks) {
+      return res.status(204).json({ message: "This user has no tasks" });
+    }
+
+    let element: number = 0;
+
+    payload.tasks.map((e) => {
+      if (e.id === task_id) {
+        element = e.id;
+      }
+    });
+
+    if (!task_id && element !== task_id) {
+      return res
+        .status(400)
+        .json({ message: "Bad Request, send Task_id with value!" });
+    }
+
+    const task = await prisma.task.findUnique({
+      where: {
+        task_id: element ?? task_id,
+      },
+    });
+
+    if (!task) return res.status(404).json({ message: "Task not found" });
+
+    const updateTask = await prisma.task.update({
+      where: {
+        task_id: task.task_id,
+      },
+      data: {
+        title: (title as string) ?? task?.title,
+        description: (description as string) ?? task?.description,
+      },
+    });
+
+    if (!updateTask)
+      return res.status(500).json({ message: "Internal error failed!" });
+
+    return res.status(200).json({ message: `New Update in ${task.title}` });
+  },
 };

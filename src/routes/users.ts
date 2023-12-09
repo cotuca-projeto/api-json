@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { controlerUsers } from "../controllers/user.controller";
-import { checkToken } from "../middlewares/jwt";
+import { checkToken, isAdmin } from "../middlewares";
 
 const routerUsers = Router();
 
@@ -16,15 +16,15 @@ routerUsers.post("/register", async (req: Request, res: Response) => {
   await controlerUsers.register(req, res);
 });
 
-routerUsers.delete("/delete", async (req: Request, res: Response) => {
+routerUsers.delete("/delete", isAdmin, async (req: Request, res: Response) => {
   await controlerUsers.deletebyId(req, res);
 });
 
-routerUsers.get("/find", checkToken, async (req: Request, res: Response) => {
+routerUsers.post("/find", isAdmin, async (req: Request, res: Response) => {
   await controlerUsers.findById(req, res);
 });
 
-routerUsers.get("/all", async (req: Request, res: Response) => {
+routerUsers.get("/all", isAdmin, async (req: Request, res: Response) => {
   await controlerUsers.listAllUsers(req, res);
 });
 
@@ -44,9 +44,13 @@ routerUsers.get(
   }
 );
 
-routerUsers.put("/forgotpassword", async (req: Request, res: Response) => {
-  await controlerUsers.forgetPassword(req, res);
-});
+routerUsers.put(
+  "/forgotpassword",
+  checkToken,
+  async (req: Request, res: Response) => {
+    await controlerUsers.forgetPassword(req, res);
+  }
+);
 
 routerUsers.post("/login", async (req: Request, res: Response) => {
   await controlerUsers.login(req, res);

@@ -1,15 +1,15 @@
 import { Request, Response } from "express";
 import { IUser } from "../interfaces";
-import { PrismaClient, task } from "@prisma/client";
-import { createToken } from "../middlewares/jwt";
+import { PrismaClient, users } from "@prisma/client";
+import { createToken } from "../middlewares";
 import sharp from "sharp";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import { convertTokenToJson } from "../utils";
 const prisma = new PrismaClient();
 
 export const controlerUsers = {
   register: async (req: Request, res: Response) => {
     const { email, first_name, last_name, password, username, photo } =
-      req.body as unknown as IUser;
+      req.query as unknown as IUser;
 
     if (!email || !first_name || !last_name || !password || !username) {
       const Verification = {
@@ -84,19 +84,16 @@ export const controlerUsers = {
         }
       });
 
-    const userWithoutPassword = {
-      ...user,
-      password_hash: undefined,
-    };
-
     return res.status(201).json({
       status: 201,
       Message: "User created!",
-      user: userWithoutPassword,
+      // user: userWithoutPassword,
+      token: createToken(user as users, null),
     });
   },
+
   deletebyId: async (req: Request, res: Response) => {
-    const id: number = parseInt(req.body.id as string);
+    const id: number = parseInt(req.query.id as string);
 
     const findUser = await prisma.users.findUnique({
       where: {
@@ -132,8 +129,9 @@ export const controlerUsers = {
 
     return res.status(200).json({ status: 200, Message: "User deleted!" });
   },
+
   findById: async (req: Request, res: Response) => {
-    const id: number = parseInt(req.body.id as string);
+    const id: number = parseInt(req.query.id as string);
     const user = await prisma.users
       .findUnique({
         where: {
@@ -157,6 +155,7 @@ export const controlerUsers = {
       return res.status(302).json({ status: 302, Message: "User not found!" });
     return res.status(200).json({ status: 200, message: user });
   },
+
   listAllUsers: async (req: Request, res: Response) => {
     const users = await prisma.users.findMany({
       include: {
@@ -173,14 +172,20 @@ export const controlerUsers = {
 
     return res.status(200).json({ status: 200, user: usersWithoutPassword });
   },
+
   updateProfileImage: async (req: Request, res: Response) => {
-    const { email, password, photo } = req.body as unknown as IUser;
+    const { photo } = req.query as unknown as IUser;
+    const userDecode = convertTokenToJson(req);
+
+    if (!userDecode) {
+      return res.status(401).json({ message: "Invalid values user" });
+    }
 
     const user = await prisma.users
       .findUnique({
         where: {
-          email: email,
-          password_hash: password,
+          email: userDecode.email,
+          password_hash: userDecode.password,
         },
         include: {
           timeLog: true,
@@ -238,14 +243,28 @@ export const controlerUsers = {
       .status(200)
       .json({ status: 200, Message: "Image updated!", userUpdate });
   },
+
   forgetPassword: async (req: Request, res: Response) => {
-    const { email, username, password } = req.body as unknown as IUser;
+    const userDecode = convertTokenToJson(req);
+
+    const password = req.query.password as string;
+
+    const regex =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+
+    if (!password || regex.test(password)) {
+      return res.status(401).json({ message: "Invalid password" });
+    }
+
+    if (!userDecode) {
+      return res.status(401).json({ status: 401, message: "Invalid token!" });
+    }
 
     const user = await prisma.users
       .findUnique({
         where: {
-          email: email,
-          username: username,
+          email: userDecode.email,
+          username: userDecode.username,
         },
         select: {
           user_id: true,
@@ -270,11 +289,9 @@ export const controlerUsers = {
 
     return res.status(200).json({ status: 200, Message: "Password changed!" });
   },
-  getImage: async (req: Request, res: Response) => {
-    const authHeader = req.headers.authorization;
-    const token = authHeader?.split(" ")[1];
 
-    const userDecode = jwt.decode(token as string) as JwtPayload;
+  getImage: async (req: Request, res: Response) => {
+    const userDecode = convertTokenToJson(req);
 
     if (!userDecode) {
       return res.status(401).json({ status: 401, message: "Invalid token!" });
@@ -305,8 +322,9 @@ export const controlerUsers = {
     res.contentType("image/jpeg");
     res.send(buffer);
   },
+
   login: async (req: Request, res: Response) => {
-    const { email, password } = req.body as unknown as IUser;
+    const { email, password } = req.query as unknown as IUser;
 
     const user = await prisma.users.findUnique({
       where: {
@@ -338,7 +356,7 @@ export const controlerUsers = {
 
     return res.status(200).json({
       status: 200,
-      user: userWithoutPassword,
+      // user: userWithoutPassword,
       token: createToken(user, task ? task : null),
     });
   },

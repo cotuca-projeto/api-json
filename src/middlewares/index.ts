@@ -23,12 +23,12 @@ export function checkToken(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export const createToken = (user: users, task: task[] | null) => {
+export function createToken(user: users, task: task[] | null) {
   if (!secret) {
     return null;
   }
 
-  const userTasks = tasks ? { tasks } : null;
+  const userTasks = task ? { task } : null;
 
   return jwt.sign(
     {
@@ -42,4 +42,14 @@ export const createToken = (user: users, task: task[] | null) => {
     },
     secret
   );
-};
+}
+
+export function isAdmin(req: Request, res: Response, next: NextFunction) {
+  if (req.query.token !== process.env.TOKEN) {
+    return res
+      .status(401)
+      .json({ message: "Not Authorized! You need put a token" });
+  } else {
+    next();
+  }
+}

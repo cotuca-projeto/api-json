@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IUser } from "../interfaces";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, task } from "@prisma/client";
 import { createToken } from "../middlewares/jwt";
 import sharp from "sharp";
 import jwt, { JwtPayload } from "jsonwebtoken";

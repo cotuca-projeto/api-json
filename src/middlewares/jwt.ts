@@ -23,7 +23,7 @@ export function checkToken(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export const createToken = (user: users, tasks: task[] | null) => {
+export const createToken = (user: users, task: task[] | null) => {
   if (!secret) {
     return null;
   }

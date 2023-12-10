@@ -46,41 +46,50 @@ indexRouter.get("/validate", async (req: Request, res: Response) => {
   }
 
   try {
-    if (!process.env.SECRET) {
-      return res.status(401).send({ message: "No secret provided" });
+    if (!process.env.TOKEN) {
+      return res.status(401).send({ message: "No TOKEN provided" });
     }
-    jwt.verify(token, process.env.SECRET);
-    
+    jwt.verify(token, process.env.TOKEN);
+
     const user = jwt.decode(token) as IUser;
-    if(!user) return null;
+    if (!user) return null;
     const newValue = await prisma.users.findUnique({
       where: {
         user_id: user.id,
-        
-      }
-    })
-    return res.status(200).send({ message: "Token Valid", user });
+      },
+      select: {
+        email: true,
+        user_id: true,
+        first_name: true,
+        last_name: true,
+        username: true,
+        task: true,
+        category: true,
+        profile_image: true,
+        timeLog: true,
+        password_hash: false,
+      },
+    });
+    return res.status(200).send({ message: "Token Valid", user: newValue });
   } catch (e: any) {
     return res.status(400).send({ message: "Token Invalid" });
   }
 });
 
 indexRouter.get("/connection", async (req: Request, res: Response) => {
-  const connection = prisma.$connect()
+  const connection = prisma.$connect();
 
   if (!connection) {
     return res.status(500).json({
       status: 500,
-      Message: "Connnection Failed!"
-    })
+      Message: "Connnection Failed!",
+    });
   } else {
     return res.status(200).json({
       status: 200,
-      Message: connection
-    })
+      Message: connection,
+    });
   }
-
-
-})
+});
 
 export default indexRouter;

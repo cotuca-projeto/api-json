@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IUser } from "../interfaces";
-import { PrismaClient, users } from "@prisma/client";
+import { Prisma, PrismaClient, users } from "@prisma/client";
 import { createToken } from "../middlewares";
 import sharp from "sharp";
 import { convertTokenToJson } from "../utils";
@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 export const controlerUsers = {
   register: async (req: Request, res: Response) => {
     const { email, first_name, last_name, password, username, photo } =
-      req.query as unknown as IUser;
+      req.body as unknown as IUser;
 
     if (!email || !first_name || !last_name || !password || !username) {
       const Verification = {
@@ -30,70 +30,52 @@ export const controlerUsers = {
       image = Buffer.from(photo, "base64");
     }
 
-    const emailExisted = await prisma.users.findUnique({
-      where: {
-        email: email,
-      },
+    const existingEmail = await prisma.users.findUnique({
+      where: { email: email },
     });
+    if (existingEmail) {
+      return res
+        .status(400)
+        .json({ status: 400, Message: "Email already exists!" });
+    }
 
-    const usernameExisted = await prisma.users.findUnique({
+    const existingUsername = await prisma.users.findUnique({
       where: {
         username: username,
       },
     });
-
-    if (emailExisted) {
+    if (existingUsername) {
       return res
-        .status(401)
-        .json({ status: 401, Message: "Email already exists!" });
+        .status(400)
+        .json({ status: 400, Message: "Username already exists!" });
     }
 
-    if (usernameExisted) {
-      return res
-        .status(401)
-        .json({ status: 401, Message: "Username already exists!" });
-    }
-
-    const user = await prisma.users
-      .create({
+      const user = await prisma.users.create({
         data: {
           email: email,
           first_name: first_name,
           last_name: last_name,
-          password_hash: password.replace(" ", ""),
+          password_hash: password,
           username: username,
-          // timeLog: { // já tem o trigger no banco de dados por isso desativei
-          //   create: {
-          //     created_at: new Date(),
-          //     updated_at: new Date(),
-          //   },
-          // },
-          profile_image: image ?? null,
+          profile_image: image,
         },
-      })
-      .catch((err) => {
-        if (
-          err.meta.cause === "Record to insert already exists." ||
-          err.meta.target
-        ) {
-          return res
-            .status(401)
-            .json({ status: 401, Message: "User already exists!" });
-        } else {
-          res.status(500).json({ status: 500, Message: "Internal error!" });
-        }
       });
 
-    return res.status(201).json({
-      status: 201,
-      Message: "User created!",
-      // user: userWithoutPassword,
-      token: createToken(user as users, null),
-    });
+      if (!user) {
+        return res
+          .status(500)
+          .json({ status: 500, Message: "Internal error!" });
+      }
+
+      return res.status(201).json({
+        status: 201,
+        Message: "User created!",
+        token: createToken(user as users, null),
+      });
   },
 
   deletebyId: async (req: Request, res: Response) => {
-    const id: number = parseInt(req.query.id as string);
+    const id: number = parseInt(req.body.id as string);
 
     const findUser = await prisma.users.findUnique({
       where: {
@@ -131,15 +113,13 @@ export const controlerUsers = {
   },
 
   findById: async (req: Request, res: Response) => {
-    const id: number = parseInt(req.query.id as string);
+    const id: number = parseInt(req.body.id as string);
     const user = await prisma.users
-      .findUnique({
+      .findFirst({
         where: {
           user_id: id,
         },
         include: {
-          timeLog: true,
-          category: true,
           task: true,
         },
       })
@@ -159,11 +139,12 @@ export const controlerUsers = {
   listAllUsers: async (req: Request, res: Response) => {
     const users = await prisma.users.findMany({
       include: {
-        timeLog: true,
-        category: true,
         task: true,
       },
     });
+
+    if (!users || users.length <= 0)
+      return res.status(404).json({ status: 404, message: "Users not found!" });
 
     const usersWithoutPassword = users.map((user) => {
       const { password_hash, ...userWithoutPassword } = user;
@@ -174,33 +155,22 @@ export const controlerUsers = {
   },
 
   updateProfileImage: async (req: Request, res: Response) => {
-    const { photo } = req.query as unknown as IUser;
+    const { photo } = req.body as unknown as IUser;
     const userDecode = convertTokenToJson(req);
 
     if (!userDecode) {
       return res.status(401).json({ message: "Invalid values user" });
     }
 
-    const user = await prisma.users
-      .findUnique({
-        where: {
-          email: userDecode.email,
-          password_hash: userDecode.password,
-        },
-        include: {
-          timeLog: true,
-          category: true,
-          task: true,
-          _count: true,
-        },
-      })
-      .catch((err) => {
-        if (err.meta.cause === "Record to select does not exist.") {
-          res.status(302).json({ status: 302, Message: "User not found!" });
-        } else {
-          res.status(500).json({ status: 500, Message: "Internal error!" });
-        }
-      });
+    const user = await prisma.users.findUnique({
+      where: {
+        email: userDecode.email,
+        password_hash: userDecode.password,
+      },
+      include: {
+        task: true,
+      },
+    });
 
     if (!user) {
       return res.status(302).json({ status: 302, Message: "User not found!" });
@@ -228,9 +198,6 @@ export const controlerUsers = {
     }
 
     const userUpdate = await prisma.users.update({
-      include: {
-        timeLog: true,
-      },
       where: {
         user_id: user.user_id,
       },
@@ -247,7 +214,7 @@ export const controlerUsers = {
   forgetPassword: async (req: Request, res: Response) => {
     const userDecode = convertTokenToJson(req);
 
-    const password = req.query.password as string;
+    const password = req.body.password as string;
 
     const regex =
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
@@ -260,23 +227,15 @@ export const controlerUsers = {
       return res.status(401).json({ status: 401, message: "Invalid token!" });
     }
 
-    const user = await prisma.users
-      .findUnique({
-        where: {
-          email: userDecode.email,
-          username: userDecode.username,
-        },
-        select: {
-          user_id: true,
-        },
-      })
-      .catch((err) => {
-        if (err.meta.cause === "Record to select does not exist.") {
-          res.status(302).json({ status: 302, Message: "User not found!" });
-        } else {
-          res.status(500).json({ status: 500, Message: "Internal error!" });
-        }
-      });
+    const user = await prisma.users.findUnique({
+      where: {
+        email: userDecode.email,
+        username: userDecode.username,
+      },
+      select: {
+        user_id: true,
+      },
+    });
 
     await prisma.users.update({
       where: {
@@ -324,7 +283,7 @@ export const controlerUsers = {
   },
 
   login: async (req: Request, res: Response) => {
-    const { email, password } = req.query as unknown as IUser;
+    const { email, password } = req.body as unknown as IUser;
 
     const user = await prisma.users.findUnique({
       where: {
@@ -332,10 +291,9 @@ export const controlerUsers = {
         password_hash: password,
       },
       include: {
-        timeLog: true,
-        category: true,
         task: true,
-        _count: true,
+        category: true,
+        timeLog: true,
       },
     });
 
@@ -349,14 +307,8 @@ export const controlerUsers = {
       },
     });
 
-    const userWithoutPassword = {
-      ...user,
-      password_hash: undefined,
-    };
-
     return res.status(200).json({
       status: 200,
-      // user: userWithoutPassword,
       token: createToken(user, task ? task : null),
     });
   },

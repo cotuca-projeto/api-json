@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 export const controllerTask = {
   create: async (req: Request, res: Response) => {
-    const { title, description, user } = req.query as unknown as ITask;
+    const { title, description, user } = req.body as unknown as ITask;
 
     if (!title || !description || !user) {
       const verification = {
@@ -48,7 +48,7 @@ export const controllerTask = {
   },
 
   deletebyId: async (req: Request, res: Response) => {
-    const id = parseInt(req.query.id as string);
+    const id = parseInt(req.body.id as string);
 
     if (!id) {
       return res
@@ -92,10 +92,7 @@ export const controllerTask = {
     const tasks = await prisma.task.findMany({
       where: {
         user_id: payload.id,
-      },
-      include: {
-        category: true,
-      },
+      }
     });
 
     if (!tasks) {
@@ -141,9 +138,9 @@ export const controllerTask = {
   updateTasks: async (req: Request, res: Response) => {
     const payload = convertTokenToJson(req);
 
-    const { title, description } = req.query;
+    const { title, description } = req.body;
 
-    const task_id = req.query.task_id as unknown as number;
+    const task_id = req.body.task_id as unknown as number;
 
     if (!payload?.tasks) {
       return res.status(204).json({ message: "This user has no tasks" });

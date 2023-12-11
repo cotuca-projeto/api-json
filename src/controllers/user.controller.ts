@@ -19,9 +19,7 @@ export const controlerUsers = {
         password: password ? "existed" : null,
         username: username || null,
       };
-      return res
-        .status(400)
-        .json({ status: 400, Message: "Bad request!", Verification });
+      return res.status(400).json({ message: "Bad request!", Verification });
     }
 
     let image: Buffer | null = null;
@@ -34,9 +32,7 @@ export const controlerUsers = {
       where: { email: email },
     });
     if (existingEmail) {
-      return res
-        .status(400)
-        .json({ status: 400, Message: "Email already exists!" });
+      return res.status(400).json({ message: "Email already exists!" });
     }
 
     const existingUsername = await prisma.users.findUnique({
@@ -45,33 +41,28 @@ export const controlerUsers = {
       },
     });
     if (existingUsername) {
-      return res
-        .status(400)
-        .json({ status: 400, Message: "Username already exists!" });
+      return res.status(400).json({ message: "Username already exists!" });
     }
 
-      const user = await prisma.users.create({
-        data: {
-          email: email,
-          first_name: first_name,
-          last_name: last_name,
-          password_hash: password,
-          username: username,
-          profile_image: image,
-        },
-      });
+    const user = await prisma.users.create({
+      data: {
+        email: email,
+        first_name: first_name,
+        last_name: last_name,
+        password_hash: password,
+        username: username,
+        profile_image: image,
+      },
+    });
 
-      if (!user) {
-        return res
-          .status(500)
-          .json({ status: 500, Message: "Internal error!" });
-      }
+    if (!user) {
+      return res.status(500).json({ message: "Internal error!" });
+    }
 
-      return res.status(201).json({
-        status: 201,
-        Message: "User created!",
-        token: createToken(user as users, null),
-      });
+    return res.status(201).json({
+      message: "User created!",
+      token: createToken(user as unknown as IUser, null),
+    });
   },
 
   deletebyId: async (req: Request, res: Response) => {
@@ -109,7 +100,7 @@ export const controlerUsers = {
       });
     }
 
-    return res.status(200).json({ status: 200, Message: "User deleted!" });
+    return res.status(200).json({ message: "User deleted!" });
   },
 
   findById: async (req: Request, res: Response) => {
@@ -125,15 +116,14 @@ export const controlerUsers = {
       })
       .catch((err) => {
         if (err.meta?.cause === "Record to select does not exist.") {
-          res.status(302).json({ status: 302, Message: "User not found!" });
+          res.status(302).json({ message: "User not found!" });
         } else {
-          res.status(500).json({ status: 500, Message: "Internal error!" });
+          res.status(500).json({ message: "Internal error!" });
         }
       });
 
-    if (!user)
-      return res.status(302).json({ status: 302, Message: "User not found!" });
-    return res.status(200).json({ status: 200, message: user });
+    if (!user) return res.status(302).json({ message: "User not found!" });
+    return res.status(200).json({ message: user });
   },
 
   listAllUsers: async (req: Request, res: Response) => {
@@ -144,14 +134,14 @@ export const controlerUsers = {
     });
 
     if (!users || users.length <= 0)
-      return res.status(404).json({ status: 404, message: "Users not found!" });
+      return res.status(404).json({ message: "Users not found!" });
 
     const usersWithoutPassword = users.map((user) => {
       const { password_hash, ...userWithoutPassword } = user;
       return userWithoutPassword;
     });
 
-    return res.status(200).json({ status: 200, user: usersWithoutPassword });
+    return res.status(200).json({ user: usersWithoutPassword });
   },
 
   updateProfileImage: async (req: Request, res: Response) => {
@@ -173,7 +163,7 @@ export const controlerUsers = {
     });
 
     if (!user) {
-      return res.status(302).json({ status: 302, Message: "User not found!" });
+      return res.status(302).json({ message: "User not found!" });
     }
 
     let image: Buffer | null = null;
@@ -187,7 +177,7 @@ export const controlerUsers = {
       if (imageSizeInMB > 3) {
         return res
           .status(400)
-          .json({ status: 400, Message: "Image size exceeds 3 MB limit." });
+          .json({ message: "Image size exceeds 3 MB limit." });
       }
 
       const resizedImageBuffer = await sharp(buffer)
@@ -208,7 +198,7 @@ export const controlerUsers = {
 
     return res
       .status(200)
-      .json({ status: 200, Message: "Image updated!", userUpdate });
+      .json({ message: "Image updated!", user: userUpdate });
   },
 
   forgetPassword: async (req: Request, res: Response) => {
@@ -224,7 +214,7 @@ export const controlerUsers = {
     }
 
     if (!userDecode) {
-      return res.status(401).json({ status: 401, message: "Invalid token!" });
+      return res.status(401).json({ message: "Invalid token!" });
     }
 
     const user = await prisma.users.findUnique({
@@ -246,14 +236,14 @@ export const controlerUsers = {
       },
     });
 
-    return res.status(200).json({ status: 200, Message: "Password changed!" });
+    return res.status(200).json({ message: "Password changed!" });
   },
 
   getImage: async (req: Request, res: Response) => {
     const userDecode = convertTokenToJson(req);
 
     if (!userDecode) {
-      return res.status(401).json({ status: 401, message: "Invalid token!" });
+      return res.status(401).json({ message: "Invalid token!" });
     }
 
     const user = await prisma.users.findUnique({
@@ -266,13 +256,11 @@ export const controlerUsers = {
     });
 
     if (!user) {
-      return res.status(404).json({ status: 404, message: "User not found!" });
+      return res.status(404).json({ message: "User not found!" });
     }
 
     if (!user.profile_image) {
-      return res
-        .status(404)
-        .json({ status: 404, message: "Profile image not found!" });
+      return res.status(404).json({ message: "Profile image not found!" });
     }
 
     const byteArray = new Uint8Array(user.profile_image);
@@ -298,7 +286,7 @@ export const controlerUsers = {
     });
 
     if (!user) {
-      return res.status(404).json({ status: 404, message: "User not found!" });
+      return res.status(404).json({ message: "User not found!" });
     }
 
     const task = await prisma.task.findMany({
@@ -308,8 +296,7 @@ export const controlerUsers = {
     });
 
     return res.status(200).json({
-      status: 200,
-      token: createToken(user, task ? task : null),
+      token: createToken(user as unknown as IUser),
     });
   },
 };

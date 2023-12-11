@@ -4,7 +4,7 @@ import { checkToken } from "../middlewares";
 
 const routerTasks = Router();
 
-routerTasks.post("/create", checkToken, async (req: Request, res: Response) => {
+routerTasks.post("/create", async (req: Request, res: Response) => {
   await controllerTask.create(req, res);
 });
 
@@ -28,7 +28,7 @@ routerTasks.post(":id", checkToken, async (req: Request, res: Response) => {
   await controllerTask.getById(req, res);
 });
 
-routerTasks.get("/update", checkToken, async (req: Request, res: Response) => {
+routerTasks.put("/update", checkToken, async (req: Request, res: Response) => {
   await controllerTask.updateTasks(req, res);
 });
 

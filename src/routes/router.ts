@@ -52,6 +52,8 @@ indexRouter.get("/validate", async (req: Request, res: Response) => {
     jwt.verify(token, process.env.TOKEN);
 
     const user = jwt.decode(token) as IUser;
+    console.log(user);
+    
     if (!user) return null;
     const newValue = await prisma.users.findUnique({
       where: {

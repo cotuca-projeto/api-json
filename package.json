@@ -19,6 +19,7 @@
   "author": "Gabriel Oliveira, Rafael Moreira",
   "license": "MIT",
   "dependencies": {
+    "@editorjs/editorjs": "^2.28.2",
     "@prisma/client": "^5.5.2",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
